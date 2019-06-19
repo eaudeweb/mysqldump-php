@@ -82,6 +82,7 @@ class Mysqldump
     private $version;
     private $tableColumnTypes = array();
     private $transformColumnValueCallable;
+    private $preExportTablesCallable;
 
     /**
      * Database name, parsed from dsn.
@@ -207,6 +208,16 @@ class Mysqldump
     public function __destruct()
     {
         $this->dbHandler = null;
+    }
+
+    /**
+     * Get table column types.
+     *
+     * @return array
+     */
+    protected function tableColumnTypes()
+    {
+      return $this->tableColumnTypes;
     }
 
     /**
@@ -446,6 +457,7 @@ class Mysqldump
             throw new Exception("Table (".$name.") not found in database");
         }
 
+        $this->hookPreExportTables($this->dbHandler);
         $this->exportTables();
         $this->exportTriggers();
         $this->exportViews();
@@ -1004,6 +1016,18 @@ class Mysqldump
     }
 
     /**
+     * Set a callable that will will be used before exporting tables.
+     *
+     * @param callable $callable
+     *
+     * @return void
+     */
+    public function setPreExportTablesCallable($callable)
+    {
+      $this->preExportTablesCallable = $callable;
+    }
+
+    /**
      * Give extending classes an opportunity to transform column values
      *
      * @param string $tableName Name of table which contains rows
@@ -1023,6 +1047,21 @@ class Mysqldump
             $colName,
             $colValue,
             $row
+        ));
+    }
+
+    /**
+     * Act on the database before exporting it
+     *
+     * @param $dbHandler
+     */
+    protected function hookPreExportTables($dbHandler) {
+        if (!$this->preExportTablesCallable) {
+            return;
+        }
+
+        call_user_func_array($this->preExportTablesCallable, array(
+            $dbHandler
         ));
     }
 
@@ -1254,9 +1293,9 @@ class Mysqldump
 abstract class CompressMethod
 {
     public static $enums = array(
-        Mysqldump::NONE,
-        Mysqldump::GZIP,
-        Mysqldump::BZIP2,
+        "None",
+        "Gzip",
+        "Bzip2"
     );
 
     /**
