@@ -1,9 +1,9 @@
 {
-    "name": "ifsnop/mysqldump-php",
+    "name": "eaudeweb/mysqldump-php",
     "description": "PHP version of mysqldump cli that comes with MySQL",
     "type": "library",
     "keywords": ["mysql", "mysqldump", "pdo", "php7", "php5", "database", "php", "sql", "hhvm", "mariadb", "mysql-backup"],
-    "homepage": "https://github.com/ifsnop/mysqldump-php",
+    "homepage": "https://github.com/eaudeweb/mysqldump-php",
     "license": "GPL-3.0-or-later",
     "minimum-stability": "stable",
     "authors": [
@@ -11,7 +11,12 @@
             "name" : "Diego Torres",
             "homepage": "https://github.com/ifsnop",
             "role": "Developer"
-        }
+        },
+        {
+            "name" : "Eau de Web",
+            "homepage": "https://github.com/eaudeweb",
+            "role": "Developer"
+        } 
     ],
     "require": {
         "php": ">=5.3.0"
